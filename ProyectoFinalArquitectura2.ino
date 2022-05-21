@@ -1,21 +1,21 @@
 #include <SoftwareSerial.h>
 SoftwareSerial BTSerial(2,3);
 
-int izqA = 6; 
-int izqB = 7; 
-int derA = 8; 
-int derB = 9; 
+int izqA = 6;            // define el pin 6 para motor izquierdo hacia adelante
+int izqB = 7;            // define el pin 7 para motor izquierdo hacia atras 
+int derA = 8;            // define el pin 8 para motor izquierdo hacia adelante 
+int derB = 9;            // define el pin 9 para motor izquierdo hacia atras 
 String estadoAUX = "115"; // inicia detenido
 
-int pecho = 4;            // define el pin 2 como (pecho) para el Ultrasonido
-int ptrig = 5;            // define el pin 3 como (ptrig) para el Ultrasonido
+int pecho = 4;            // define el pin 4 como (pecho) para el Ultrasonido
+int ptrig = 5;            // define el pin 5 como (ptrig) para el Ultrasonido
 int duracion, distancia;  // para Calcular distacia
 
 //Definimos seguidores de linea
 int ls = 10; //Sensor Izquierdo
 int rs = 11; //Sensor Derecho
-int leftValue;
-int rightValue;
+int leftValue; //Definimos los valores para la izquierda
+int rightValue; //Definimos los valores para la derecha
 
 void setup() {
   Serial.begin(9600);    // inicia el puerto serial para comunicacion con el Bluetooth
@@ -112,15 +112,15 @@ void SeguidorLinea(){
         leftValue = digitalRead(ls);
         rightValue = digitalRead(rs);
         delay(10);
-        int velociadad = 130;            // Velocidad de los motores (0-130)
+        int velocidad = 130;            // Velocidad de los motores (0-130)
         if (rightValue == 0 && leftValue == 0) {
-            Adelante(velociadad);
+            Adelante(velocidad);
         }
         if (rightValue == 1 && leftValue == 0) {
-           Izq(velociadad);
+           Izq(velocidad);
          }
          if (rightValue == 0 && leftValue == 1) {
-          Der(velociadad);
+          Der(velocidad);
          }
          if (rightValue == 1 && leftValue == 1) {
            Parar();
@@ -137,9 +137,10 @@ void SeguidorLineaControlador(){
      distancia = (duracion/2) / 29;            // calcula la distancia en centimetros
      delay(10); 
      Serial.println(distancia);
-     if (distancia >=1 && distancia <= 10){    // si la distancia es menor de 15cm
-        digitalWrite(13,HIGH);                 // Enciende LED
+     if (distancia >=1 && distancia <= 15){    // si la distancia es menor de 15cm
         Parar();
+        digitalWrite(13,HIGH);                 // Enciende buzzer
+        delay(1000);
         digitalWrite(13,LOW);
      }else{
       SeguidorLinea();            //Función seguidor de linea
